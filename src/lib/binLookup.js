@@ -89,7 +89,7 @@ function matchesFilters(row, filters) {
 }
 
 
-export async function lookupBins(bins, filters) {
+export async function lookupBins(bins, filters, limit = 100) {
   const results = [];
   const searchBins = new Set((bins || []).map(b => b.toString().substring(0, 6))); // match first 6
   const isBulk = searchBins.size > 0;
@@ -97,8 +97,6 @@ export async function lookupBins(bins, filters) {
   if (!isBulk && (!filters || Object.values(filters).every(v => !v))) {
     return [];
   }
-
-  const limit = 50; // limit returned rows to prevent browser overload
 
   // 1. Check in cached_bins.csv first (fastest)
   if (fs.existsSync(CACHED_DB_PATH)) {

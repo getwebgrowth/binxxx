@@ -144,7 +144,7 @@ export default function SearchableDropdown({
       {/* Clickable selector box */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="premium-input w-full min-h-[42px] p-2.5 pl-4 pr-14 border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950 flex items-center justify-between cursor-pointer focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-400 hover:border-gray-300 dark:hover:border-gray-700 transition-all select-none shadow-sm"
+        className="premium-input relative w-full min-h-[42px] p-2.5 pl-4 pr-14 border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950 flex items-center justify-between cursor-pointer focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-400 hover:border-gray-300 dark:hover:border-gray-700 transition-all select-none shadow-sm"
       >
         <div className="flex-grow overflow-hidden text-left">
           {renderSelectedDisplay()}

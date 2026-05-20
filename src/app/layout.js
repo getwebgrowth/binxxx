@@ -1,8 +1,8 @@
 import './globals.css';
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
-import { Search } from 'lucide-react';
 import AdsArea from '@/components/AdsArea';
 import ThemeToggle from '@/components/ThemeToggle';
+import CommandPaletteTrigger from '@/components/CommandPaletteTrigger';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta' });
 const jetbrains = JetBrains_Mono({ weight: ['400', '600', '800'], subsets: ['latin'], variable: '--font-mono' });
@@ -55,11 +55,8 @@ export default function RootLayout({ children }) {
               </nav>
               
               <div className="flex items-center gap-3">
-                {/* Search Shortcut */}
-                <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100/80 dark:bg-gray-900/80 border border-gray-200/60 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all shadow-inner">
-                  <Search className="w-3.5 h-3.5" />
-                  <span className="font-mono text-[10px] font-bold tracking-widest opacity-70">⌘K</span>
-                </button>
+                {/* Search Shortcut & Command Palette */}
+                <CommandPaletteTrigger />
                 {/* Theme Toggle */}
                 <ThemeToggle />
               </div>

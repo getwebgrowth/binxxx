@@ -4,10 +4,10 @@ import { lookupBins } from '@/lib/binLookup';
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { bulk, filters } = body;
+    const { bulk, filters, limit } = body;
 
     // bulk could be an array of BINs or null if just filtering
-    const results = await lookupBins(bulk, filters);
+    const results = await lookupBins(bulk, filters, limit);
 
     return NextResponse.json({ results });
   } catch (error) {

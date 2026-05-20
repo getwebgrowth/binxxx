@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X, ChevronDown, CheckCircle2, Zap, Settings } from "lucide-react";
+import { Search, X, ChevronDown, CheckCircle2, Zap, Settings, Check } from "lucide-react";
 import SearchableDropdown from "@/components/SearchableDropdown";
 import { brands, levels, banks, countries } from "@/lib/filterData";
 
@@ -10,6 +10,9 @@ export default function Home() {
   const [filters, setFilters] = useState({ vendor: "", bank: "", level: [], country: "", type: "" });
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [pageSize, setPageSize] = useState(100);
+  const [layoutMode, setLayoutMode] = useState("windowed"); // "windowed" or "extended"
 
   const handleLookup = async (e) => {
     e.preventDefault();
@@ -26,7 +29,8 @@ export default function Home() {
           level: filters.level,
           country: filters.country,
           type: filters.type
-        }
+        },
+        limit: pageSize
       };
 
       const res = await fetch("/api/check-bin", {
@@ -110,13 +114,64 @@ export default function Home() {
                 Clear
               </button>
 
-              <button 
-                type="button"
-                className="flex items-center justify-center p-2.5 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-850 border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl shadow-sm transition-all"
-                title="Settings"
-              >
-                <Settings className="w-4 h-4" />
-              </button>
+              <div className="relative">
+                <button 
+                  type="button"
+                  onClick={() => setSettingsOpen(!settingsOpen)}
+                  className="flex items-center justify-center p-2.5 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-850 border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl shadow-sm transition-all active:scale-95 duration-200"
+                  title="Settings"
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
+
+                {settingsOpen && (
+                  <div className="absolute right-0 top-full mt-2 z-50 w-52 glass-panel border border-gray-200/80 dark:border-gray-800 shadow-2xl bg-white dark:bg-gray-950 p-4 rounded-xl flex flex-col gap-3 animate-fade-up">
+                    <div>
+                      <span className="block text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5">Page Size</span>
+                      <div className="flex flex-col gap-1">
+                        {[100, 250, 500, 1000].map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => {
+                              setPageSize(size);
+                              setSettingsOpen(false);
+                            }}
+                            className="flex items-center justify-between w-full px-2.5 py-1.5 text-xs text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg transition-colors"
+                          >
+                            <span className="font-semibold">{size}</span>
+                            {pageSize === size && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="w-full h-[1px] bg-gray-100 dark:bg-gray-850" />
+                    
+                    <div className="flex flex-col gap-0.5">
+                      <button
+                        onClick={() => {
+                          setLayoutMode("extended");
+                          setSettingsOpen(false);
+                        }}
+                        className="flex items-center justify-between w-full px-2.5 py-1.5 text-xs text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg transition-colors font-medium"
+                      >
+                        <span>Extended Mode</span>
+                        {layoutMode === "extended" && <Check className="w-3.5 h-3.5 text-blue-500" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLayoutMode("windowed");
+                          setSettingsOpen(false);
+                        }}
+                        className="flex items-center justify-between w-full px-2.5 py-1.5 text-xs text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg transition-colors font-medium"
+                      >
+                        <span>Windowed Mode</span>
+                        {layoutMode === "windowed" && <Check className="w-3.5 h-3.5 text-blue-500" />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -211,7 +266,9 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="glass-panel overflow-hidden border-gray-200/80 dark:border-gray-800 shadow-md w-full">
+          <div className={`glass-panel overflow-hidden border-gray-200/80 dark:border-gray-800 shadow-md w-full transition-all duration-300 ${
+            layoutMode === 'windowed' ? 'max-h-[500px] overflow-y-auto custom-scrollbar' : ''
+          }`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-500 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wider border-b border-gray-200/80 dark:border-gray-800">
