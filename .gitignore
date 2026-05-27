@@ -43,3 +43,14 @@ next-env.d.ts
 # agent configs
 .agents/
 skills-lock.json
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Local logs & cache
+src/lib/cached_bins.csv
+dev.log

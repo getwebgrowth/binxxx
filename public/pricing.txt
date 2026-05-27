@@ -1,0 +1,18 @@
+# Pricing - CC Bins
+
+CC Bins is primarily a free, public intelligence utility for searching and auditing credit card BIN / IIN ranges. We offer free tier web access as well as premium database downloads for offline development.
+
+## Web Lookup Interface
+- **Price:** $0.00 / month (Free)
+- **Limits:** Up to 1,000 bulk lookups per single query stream
+- **Features:** Advanced brand/issuer/country filters, live community reviews, and Luhn compliance verification
+
+## Premium Offline Database Download
+- **Price:** $149.00 (One-Time Purchase)
+- **Features:** Complete sanitized CSV/SQL database download (376,900+ verified rows), weekly updates for 12 months, and full offline integration support
+- **Purchase Contact:** contact@ccbins.co
+
+## API Access (Developer Sandbox)
+- **Price:** Free / Beta
+- **Limits:** Up to 60 queries per minute (rate-limited)
+- **Features:** REST API endpoint access, JSON metadata payloads, and sub-millisecond response routing

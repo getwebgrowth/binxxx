@@ -1,4 +1,12 @@
-import { Wrench, FileCode, CreditCard, User, Cpu, Database, Network } from "lucide-react";
+import { Wrench, FileCode, CreditCard, User, Cpu, Database, Network, Megaphone } from "lucide-react";
+
+export const metadata = {
+  title: "Card Intelligence & Verification Tools | CC Bins",
+  description: "Explore our developer and checkout auditing tools including card generator, temp email, proxy verification, and ad placement options.",
+  alternates: {
+    canonical: 'https://ccbins.co/tools',
+  }
+};
 
 export default function ToolsPage() {
   const categories = [
@@ -61,17 +69,26 @@ export default function ToolsPage() {
         { name: "AI Chat", link: "#" },
         { name: "Coming Soon", link: "#", disabled: true }
       ]
+    },
+    {
+      title: "Sponsorship",
+      icon: <Megaphone className="w-5 h-5" />,
+      color: "text-rose-500",
+      items: [
+        { name: "Book Ad Placement", link: "/tools/book-ad" },
+        { name: "Traffic Metrics", link: "/tools/book-ad" }
+      ]
     }
   ];
 
   return (
     <div className="w-full flex-grow flex flex-col animate-fade-up">
       <div className="mb-10 text-center">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-3 flex items-center justify-center gap-3">
-          <Wrench className="w-8 h-8 text-gray-700" />
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-3 flex items-center justify-center gap-3">
+          <Wrench className="w-8 h-8 text-gray-700 dark:text-gray-300" />
           Intelligence Tools
         </h1>
-        <p className="text-sm text-gray-500 font-medium max-w-2xl mx-auto">
+        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium max-w-2xl mx-auto">
           A suite of premium tools for data analysis, generation, and verification.
         </p>
       </div>
@@ -90,8 +107,8 @@ export default function ToolsPage() {
                   href={item.disabled ? undefined : item.link}
                   className={`px-4 py-3 rounded-lg text-xs font-bold transition-all ${
                     item.disabled 
-                      ? "bg-gray-50 text-gray-400 border border-transparent cursor-not-allowed border-dashed" 
-                      : "bg-white border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600 shadow-sm hover:shadow"
+                      ? "bg-gray-50 dark:bg-gray-900/40 text-gray-400 dark:text-gray-600 border border-transparent cursor-not-allowed border-dashed" 
+                      : "bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:border-blue-300 dark:hover:border-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm hover:shadow"
                   }`}
                 >
                   {item.name}

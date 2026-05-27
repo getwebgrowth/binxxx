@@ -7,7 +7,7 @@ export function AdSlot({ width = "100%", height = "100px", text = "ADVERTISEMENT
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
       <span className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">{text}</span>
       <div className="absolute bottom-2 right-2 flex items-center gap-1">
-        <span className="text-[8px] bg-white/80 px-1.5 py-0.5 rounded text-gray-400 font-mono">Ads by BinX</span>
+        <span className="text-[8px] bg-white/80 px-1.5 py-0.5 rounded text-gray-400 font-mono">Sponsored</span>
       </div>
     </div>
   );

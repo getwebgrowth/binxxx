@@ -1,172 +1,136 @@
 import fs from 'fs';
-import readline from 'readline';
 import path from 'path';
-
-const UNIFIED_DB_PATH = path.join(process.cwd(), 'src', 'lib', 'bins_unified.csv');
-const CACHED_DB_PATH = path.join('/tmp', 'cached_bins.csv');
-
-// Helper to generate country flag emoji
-export function getFlagEmoji(countryCode) {
-  if (!countryCode) return '';
-  const codePoints = countryCode
-    .toUpperCase()
-    .split('')
-    .map(char => 127397 + char.charCodeAt(0));
-  try {
-    return String.fromCodePoint(...codePoints);
-  } catch (e) {
-    return '';
-  }
-}
+import { getDb, initDb, getFlagEmoji, CACHED_DB_PATH } from './db';
 
 const normalize = (str) => (str ? str.toString().toLowerCase().trim() : '');
 
-// Fast CSV parsing that handles quotes
-function parseRow(line) {
-  if (!line || line.trim() === '' || line.startsWith('bin,')) {
-    return null;
-  }
+const inflightFetches = new Map();
 
-  const parts = [];
-  let insideQuote = false;
-  let currentPart = '';
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') {
-      insideQuote = !insideQuote;
-    } else if (char === ',' && !insideQuote) {
-      parts.push(currentPart);
-      currentPart = '';
-    } else {
-      currentPart += char;
-    }
-  }
-  parts.push(currentPart);
-
-  if (parts.length < 5) return null;
-
-  const clean = (val) => {
-    if (!val) return '';
-    return val.replace(/^["']|["']$/g, '').trim();
-  };
-
-  // Columns: bin,brand,type,level,bank,country,countryCode,flag,phone,url
-  return {
-    bin: clean(parts[0]),
-    brand: clean(parts[1]),
-    type: clean(parts[2]),
-    level: clean(parts[3]),
-    bank: clean(parts[4]),
-    country: clean(parts[5]),
-    countryCode: clean(parts[6]),
-    flag: clean(parts[7]) || getFlagEmoji(clean(parts[6])),
-    phone: clean(parts[8]),
-    url: clean(parts[9])
-  };
-}
-
-function matchesFilters(row, filters) {
-  if (!filters) return true;
-  if (filters.brand && normalize(row.brand) !== normalize(filters.brand)) return false;
-  if (filters.type && normalize(row.type) !== normalize(filters.type)) return false;
+function matchesFilters(row, normFilters) {
+  if (!normFilters) return true;
   
-  if (filters.level) {
-    if (Array.isArray(filters.level)) {
-      if (filters.level.length > 0 && !filters.level.map(l => normalize(l)).includes(normalize(row.level))) return false;
-    } else if (normalize(row.level) !== normalize(filters.level)) {
-      return false;
-    }
+  const rowBrandNorm = normalize(row.brand);
+  const rowTypeNorm = normalize(row.type);
+  const rowLevelNorm = normalize(row.level);
+  const rowBankNorm = normalize(row.bank);
+  const rowCountryNorm = normalize(row.country);
+  const rowCountryCodeNorm = normalize(row.countryCode);
+
+  if (normFilters.brand && rowBrandNorm !== normFilters.brand) return false;
+  if (normFilters.type && rowTypeNorm !== normFilters.type) return false;
+  
+  if (normFilters.level && normFilters.level.length > 0) {
+    if (!normFilters.level.includes(rowLevelNorm)) return false;
   }
   
-  if (filters.bank && !normalize(row.bank).includes(normalize(filters.bank))) return false;
+  if (normFilters.bank && !rowBankNorm.includes(normFilters.bank)) return false;
   
-  if (filters.country) {
-    const normCountry = normalize(filters.country);
-    if (normalize(row.country) !== normCountry && normalize(row.countryCode) !== normCountry) return false;
+  if (normFilters.country) {
+    if (rowCountryNorm !== normFilters.country && rowCountryCodeNorm !== normFilters.country) return false;
   }
   
   return true;
 }
 
-
 export async function lookupBins(bins, filters, limit = 100) {
+  await initDb();
+  const db = getDb();
+  
   const results = [];
   const searchBins = new Set((bins || []).map(b => b.toString().substring(0, 6))); // match first 6
   const isBulk = searchBins.size > 0;
   
-  if (!isBulk && (!filters || Object.values(filters).every(v => !v))) {
+  const normFilters = filters ? {
+    brand: normalize(filters.brand),
+    type: normalize(filters.type),
+    level: Array.isArray(filters.level)
+      ? filters.level.map(l => normalize(l)).filter(Boolean)
+      : filters.level ? [normalize(filters.level)] : [],
+    bank: normalize(filters.bank),
+    country: normalize(filters.country)
+  } : null;
+
+  const hasActiveFilters = normFilters && (
+    normFilters.brand ||
+    normFilters.type ||
+    (normFilters.level && normFilters.level.length > 0) ||
+    normFilters.bank ||
+    normFilters.country
+  );
+
+  if (!isBulk && !hasActiveFilters) {
     return [];
   }
 
-  // 1. Check in cached_bins.csv first (fastest)
-  if (fs.existsSync(CACHED_DB_PATH)) {
-    const fileStream = fs.createReadStream(CACHED_DB_PATH);
-    const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-
-    for await (const line of rl) {
-      const row = parseRow(line);
-      if (!row || !row.bin) continue;
-      const rowBin6 = row.bin.substring(0, 6);
-
-      if (isBulk) {
-        if (searchBins.has(rowBin6) && matchesFilters(row, filters)) {
-          results.push(row);
-          searchBins.delete(rowBin6);
-        }
-      } else {
-        if (matchesFilters(row, filters)) {
+  if (isBulk) {
+    // Query database for requested BINs
+    const searchBinsArr = Array.from(searchBins);
+    const placeholders = searchBinsArr.map(() => '?').join(',');
+    const query = `SELECT * FROM bins WHERE bin IN (${placeholders})`;
+    
+    try {
+      const rows = db.prepare(query).all(...searchBinsArr);
+      for (const row of rows) {
+        if (matchesFilters(row, normFilters)) {
           results.push(row);
         }
       }
+    } catch (err) {
+      console.error("SQLite bulk query failed:", err);
     }
-    if (isBulk && searchBins.size === 0) return results;
-  }
-
-  // 2. Check in bins_unified.csv
-  if (fs.existsSync(UNIFIED_DB_PATH)) {
-    const fileStream = fs.createReadStream(UNIFIED_DB_PATH);
-    const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-
-    for await (const line of rl) {
-      if (results.length >= limit && !isBulk) {
-        rl.close();
-        break;
-      }
-
-      const row = parseRow(line);
-      if (!row || !row.bin) continue;
-      const rowBin6 = row.bin.substring(0, 6);
-
-      if (isBulk) {
-        if (searchBins.has(rowBin6)) {
-          if (matchesFilters(row, filters)) {
-            results.push(row);
-            searchBins.delete(rowBin6);
+    
+    // Fill remaining missing bins as Not Found or Fetch from API
+    const foundBins = new Set(results.map(r => r.bin.substring(0, 6)));
+    for (const notFoundBin of searchBins) {
+      if (!foundBins.has(notFoundBin)) {
+        if (bins.length === 1) {
+          const binToSearch = bins[0];
+          const apiResult = await fetchFromApi(binToSearch);
+          if (apiResult) {
+            if (matchesFilters(apiResult, normFilters)) {
+              results.push(apiResult);
+              continue;
+            }
           }
         }
-      } else {
-        if (matchesFilters(row, filters)) {
-          results.push(row);
-        }
+        results.push({ bin: notFoundBin, error: "Not found" });
       }
-    }
-  }
-
-  // 3. Fallback to API for single BIN query if not found in cache or database
-  if (isBulk && bins.length === 1 && searchBins.size > 0) {
-    const binToSearch = bins[0];
-    const apiResult = await fetchFromApi(binToSearch);
-    if (apiResult) {
-      if (matchesFilters(apiResult, filters)) {
-        results.push(apiResult);
-      }
-    } else {
-      results.push({ bin: binToSearch, error: "Not found in DB or API" });
     }
   } else {
-    // Fill remaining missing bins as Not Found
-    for (const notFoundBin of searchBins) {
-      results.push({ bin: notFoundBin, error: "Not found" });
+    // Query database with active filters
+    let query = "SELECT * FROM bins WHERE 1=1";
+    const params = [];
+    
+    if (normFilters.brand) {
+      query += " AND LOWER(brand) = ?";
+      params.push(normFilters.brand);
+    }
+    if (normFilters.type) {
+      query += " AND LOWER(type) = ?";
+      params.push(normFilters.type);
+    }
+    if (normFilters.level && normFilters.level.length > 0) {
+      const placeholders = normFilters.level.map(() => '?').join(',');
+      query += ` AND LOWER(level) IN (${placeholders})`;
+      normFilters.level.forEach(l => params.push(l));
+    }
+    if (normFilters.bank) {
+      query += " AND LOWER(bank) LIKE ?";
+      params.push(`%${normFilters.bank}%`);
+    }
+    if (normFilters.country) {
+      query += " AND (LOWER(country) = ? OR LOWER(countryCode) = ?)";
+      params.push(normFilters.country, normFilters.country);
+    }
+    
+    query += " LIMIT ?";
+    params.push(limit);
+
+    try {
+      const rows = db.prepare(query).all(...params);
+      results.push(...rows);
+    } catch (err) {
+      console.error("SQLite filter query failed:", err);
     }
   }
 
@@ -174,33 +138,75 @@ export async function lookupBins(bins, filters, limit = 100) {
 }
 
 async function fetchFromApi(bin) {
+  const bin6 = bin.substring(0, 6);
+  const db = getDb();
+
+  // Double check SQLite first
   try {
-    const res = await fetch(`https://lookup.binlist.net/${bin}`, {
-      headers: { "Accept-Version": "3" }
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    
-    const row = {
-      bin: bin,
-      brand: data.scheme || '',
-      type: data.type || '',
-      level: data.brand || '',
-      bank: data.bank ? data.bank.name : '',
-      country: data.country ? data.country.name : '',
-      countryCode: data.country ? data.country.alpha2 : '',
-      flag: data.country ? data.country.emoji : getFlagEmoji(data.country ? data.country.alpha2 : ''),
-      phone: data.bank ? data.bank.phone : '',
-      url: data.bank ? data.bank.url : ''
-    };
-
-    // Cache it!
-    const cacheLine = `\n${row.bin},${row.brand},${row.type},${row.level},${row.bank},${row.country},${row.countryCode},${row.flag},${row.phone},${row.url}`;
-    fs.appendFileSync(CACHED_DB_PATH, cacheLine);
-
-    return row;
+    const existing = db.prepare("SELECT * FROM bins WHERE bin = ?").get(bin6);
+    if (existing) {
+      return existing;
+    }
   } catch (err) {
-    console.error("API error", err);
-    return null;
+    console.error("SQLite check in fetchFromApi failed:", err);
+  }
+
+  if (inflightFetches.has(bin6)) {
+    return inflightFetches.get(bin6);
+  }
+
+  const fetchPromise = (async () => {
+    try {
+      const res = await fetch(`https://lookup.binlist.net/${bin}`, {
+        headers: { "Accept-Version": "3" }
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      
+      const row = {
+        bin: bin,
+        brand: data.scheme || '',
+        type: data.type || '',
+        level: data.brand || '',
+        bank: (data.bank && data.bank.name) || '',
+        country: (data.country && data.country.name) || '',
+        countryCode: (data.country && data.country.alpha2) || '',
+        flag: (data.country && data.country.emoji) || getFlagEmoji((data.country && data.country.alpha2) || ''),
+        phone: (data.bank && data.bank.phone) || '',
+        url: (data.bank && data.bank.url) || ''
+      };
+
+      // Write to SQLite and CSV cache
+      try {
+        const existing = db.prepare("SELECT bin FROM bins WHERE bin = ?").get(bin6);
+        if (!existing) {
+          // 1. Insert into bins.db SQLite database
+          db.prepare(`
+            INSERT INTO bins (bin, brand, type, level, bank, country, countryCode, flag, phone, url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(row.bin, row.brand, row.type, row.level, row.bank, row.country, row.countryCode, row.flag, row.phone, row.url);
+
+          // 2. Append to cached_bins.csv as text backup
+          const cacheLine = `${row.bin},${row.brand},${row.type},${row.level},${row.bank},${row.country},${row.countryCode},${row.flag},${row.phone},${row.url}\n`;
+          fs.appendFileSync(CACHED_DB_PATH, cacheLine);
+        }
+      } catch (dbErr) {
+        console.error("Failed to write resolved API bin to SQLite/CSV:", dbErr);
+      }
+
+      return row;
+    } catch (err) {
+      console.error("API error", err);
+      return null;
+    }
+  })();
+
+  inflightFetches.set(bin6, fetchPromise);
+
+  try {
+    const result = await fetchPromise;
+    return result;
+  } finally {
+    inflightFetches.delete(bin6);
   }
 }

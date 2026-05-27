@@ -1,78 +1,166 @@
+import Link from 'next/link';
+
 export default function AdsArea() {
   return (
-    <div className="w-full flex flex-col items-center gap-3 py-5 px-4 bg-white border-b border-gray-200/80 shadow-sm animate-fade-up">
+    <div className="w-full flex flex-col items-center gap-3.5 py-5 px-4 bg-white dark:bg-[#070b13] border-b border-gray-150 dark:border-gray-850 shadow-sm animate-fade-up">
       {/* Top Text Ads */}
-      <div className="w-full text-center space-y-1.5 font-bold tracking-wide text-[10px] sm:text-xs">
-        <div>
-          <a href="https://elonmoney.vip/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors uppercase">
-            <span className="text-blue-500 font-extrabold">ELONMONEY.VIP</span> - EXCLUSIVE CVV SHOP | DAILY UPDATE | SNIFFED CCs | ALL CARDS REF
-          </a>
+      <div className="w-full text-center space-y-2.5 font-bold tracking-wide text-[10px] sm:text-xs">
+        {/* Text Slot 1 */}
+        <div className="flex justify-center">
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="group inline-flex items-center flex-wrap justify-center text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors uppercase select-none"
+          >
+            <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 text-[8px] sm:text-[9px] rounded font-mono font-bold mr-1.5 border border-blue-200/50 dark:border-blue-900/30 shrink-0">
+              TEXT AD SLOT 1
+            </span>
+            <span className="filter blur-[3px] opacity-45 font-medium transition-all duration-300 group-hover:opacity-60">
+              ELONMONEY.VIP - EXCLUSIVE CVV SHOP | DAILY UPDATE | SNIFFED CCs | ALL CARDS REF
+            </span>
+            <span className="ml-1.5 text-[8px] sm:text-[9px] text-blue-500 font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+              [BOOK NOW &rarr;]
+            </span>
+          </Link>
         </div>
-        <div>
-          <a href="https://rockclub.to/access/register?r=LWEr1TMt" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-red-600 transition-colors uppercase">
-            ROCK CLUB CC SHOP • <span className="text-red-500 font-extrabold">ONLY FIRSTHAND CC</span> • REFUNDABLE • 24/7 LIVE SUPPORT
-          </a>
+        
+        {/* Text Slot 2 */}
+        <div className="flex justify-center">
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="group inline-flex items-center flex-wrap justify-center text-gray-500 hover:text-red-650 dark:hover:text-red-400 transition-colors uppercase select-none"
+          >
+            <span className="px-1.5 py-0.5 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-[8px] sm:text-[9px] rounded font-mono font-bold mr-1.5 border border-red-200/50 dark:border-red-900/30 shrink-0">
+              TEXT AD SLOT 2
+            </span>
+            <span className="filter blur-[3px] opacity-45 font-medium transition-all duration-300 group-hover:opacity-60">
+              ROCK CLUB CC SHOP • ONLY FIRSTHAND CC • REFUNDABLE • 24/7 LIVE SUPPORT
+            </span>
+            <span className="ml-1.5 text-[8px] sm:text-[9px] text-red-550 dark:text-red-400 font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+              [BOOK NOW &rarr;]
+            </span>
+          </Link>
         </div>
       </div>
 
       {/* Banner Ads Grid */}
-      <div className="w-full max-w-4xl space-y-2 mt-1">
+      <div className="w-full max-w-4xl space-y-2 mt-1 select-none">
         {/* Row 1: 3 Banners */}
         <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          <a href="https://t.me/shoppy_plus2025" target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-green-200 bg-gradient-to-r from-emerald-800 to-green-900 aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]">
-            <img src="/images/ads/shoppy.jpeg" alt="Shoppy Plus" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 z-10" />
-            <div className="text-center px-2 z-0">
-              <span className="block text-[8px] sm:text-xs font-black text-white tracking-widest uppercase">SHOPPY</span>
-              <span className="block text-[5px] sm:text-[8px] font-bold text-green-300">Pay only 20% value</span>
+          {/* Banner Slot 1 */}
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-green-200 dark:border-green-950/30 bg-gradient-to-r from-emerald-800 to-green-900 aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]"
+          >
+            <img src="/images/ads/shoppy.jpeg" alt="Shoppy Plus" className="absolute inset-0 w-full h-full object-cover filter blur-[4.5px] brightness-[0.35] group-hover:scale-[1.02] transition-all duration-300 z-10" />
+            <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden">
+              <div className="bg-neutral-900/85 text-white font-mono font-black uppercase tracking-widest text-[6px] sm:text-[9px] py-1 px-14 rotate-[-20deg] shadow-md border-y border-white/10 select-none whitespace-nowrap">
+                BOOK SLOT 1
+              </div>
             </div>
-          </a>
+          </Link>
           
-          <a href="https://retroswipe.su/" target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-indigo-200 bg-gradient-to-r from-violet-800 to-indigo-900 aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]">
-            <img src="/images/ads/retroswipe.gif" alt="RetroSwipe" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 z-10" />
-            <div className="text-center px-2 z-0">
-              <span className="block text-[8px] sm:text-xs font-black text-white tracking-widest uppercase">ETROSWIPE</span>
+          {/* Banner Slot 2 */}
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-indigo-200 dark:border-indigo-950/30 bg-gradient-to-r from-violet-800 to-indigo-900 aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]"
+          >
+            <img src="/images/ads/retroswipe.gif" alt="RetroSwipe" className="absolute inset-0 w-full h-full object-cover filter blur-[4.5px] brightness-[0.35] group-hover:scale-[1.02] transition-all duration-300 z-10" />
+            <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden">
+              <div className="bg-neutral-900/85 text-white font-mono font-black uppercase tracking-widest text-[6px] sm:text-[9px] py-1 px-14 rotate-[-20deg] shadow-md border-y border-white/10 select-none whitespace-nowrap">
+                BOOK SLOT 2
+              </div>
             </div>
-          </a>
+          </Link>
 
-          <a href="https://t.me/bpdomain" target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-800 bg-gradient-to-r from-gray-900 to-black aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]">
-            <img src="/images/ads/free_lookup.png" alt="Free Lookup" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 z-10" />
-            <div className="text-center px-2 z-0">
-              <span className="block text-[8px] sm:text-xs font-black text-green-400 tracking-widest uppercase">FREE LOOKUP</span>
+          {/* Banner Slot 3 */}
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-800 dark:border-gray-900 bg-gradient-to-r from-gray-900 to-black aspect-[4/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]"
+          >
+            <img src="/images/ads/free_lookup.png" alt="Free Lookup" className="absolute inset-0 w-full h-full object-cover filter blur-[4.5px] brightness-[0.35] group-hover:scale-[1.02] transition-all duration-300 z-10" />
+            <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden">
+              <div className="bg-neutral-900/85 text-white font-mono font-black uppercase tracking-widest text-[6px] sm:text-[9px] py-1 px-14 rotate-[-20deg] shadow-md border-y border-white/10 select-none whitespace-nowrap">
+                BOOK SLOT 3
+              </div>
             </div>
-          </a>
+          </Link>
         </div>
 
         {/* Row 2: 2 Banners */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-3xl mx-auto">
-          <a href="https://ronaldo-club.to/auth/register?r=fbSChlqN" target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-pink-200 bg-gradient-to-r from-pink-600 to-rose-700 aspect-[5/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]">
-            <img src="/images/ads/ronaldo.png" alt="Ronaldo Club" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 z-10" />
-            <div className="text-center px-4 z-0">
-              <span className="block text-[8px] sm:text-xs font-black text-white tracking-wider uppercase">RONALDO CLUB</span>
-              <span className="block text-[5px] sm:text-[8px] font-bold text-pink-200">TOP QUALITY AT BEST PRICES</span>
+          {/* Banner Slot 4 */}
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-pink-200 dark:border-pink-950/30 bg-gradient-to-r from-pink-600 to-rose-700 aspect-[5/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]"
+          >
+            <img src="/images/ads/ronaldo.png" alt="Ronaldo Club" className="absolute inset-0 w-full h-full object-cover filter blur-[4.5px] brightness-[0.35] group-hover:scale-[1.02] transition-all duration-300 z-10" />
+            <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden">
+              <div className="bg-neutral-900/85 text-white font-mono font-black uppercase tracking-widest text-[6px] sm:text-[9px] py-1 px-14 rotate-[-20deg] shadow-md border-y border-white/10 select-none whitespace-nowrap">
+                BOOK SLOT 4
+              </div>
             </div>
-          </a>
+          </Link>
 
-          <a href="https://cerberux-club.to/auth?r=jPOHQypZ" target="_blank" rel="noopener noreferrer" className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-blue-200 bg-gradient-to-r from-blue-700 to-indigo-800 aspect-[5/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]">
-            <img src="/images/ads/cerberux.png" alt="Cerberux Club" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 z-10" />
-            <div className="text-center px-4 z-0">
-              <span className="block text-[8px] sm:text-xs font-black text-white tracking-wider uppercase">CERBERUX CLUB</span>
-              <span className="block text-[5px] sm:text-[8px] font-bold text-blue-200">CVVs • VPNs • DUMPS • RDPs</span>
+          {/* Banner Slot 5 */}
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="block relative group overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all border border-blue-200 dark:border-blue-950/30 bg-gradient-to-r from-blue-700 to-indigo-800 aspect-[5/1] flex items-center justify-center min-h-[45px] sm:min-h-[70px]"
+          >
+            <img src="/images/ads/cerberux.png" alt="Cerberux Club" className="absolute inset-0 w-full h-full object-cover filter blur-[4.5px] brightness-[0.35] group-hover:scale-[1.02] transition-all duration-300 z-10" />
+            <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden">
+              <div className="bg-neutral-900/85 text-white font-mono font-black uppercase tracking-widest text-[6px] sm:text-[9px] py-1 px-14 rotate-[-20deg] shadow-md border-y border-white/10 select-none whitespace-nowrap">
+                BOOK SLOT 5
+              </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
 
       {/* Bottom Text Ads */}
-      <div className="w-full text-center space-y-1.5 font-bold tracking-wide text-[10px] sm:text-xs mt-1">
-        <div>
-          <a href="https://storm.gift/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
-            StormCheck • <span className="text-blue-500 font-extrabold">Blazing Fast Checker</span> • Zero Logs, $0 Charge, Cheap and FAST
-          </a>
+      <div className="w-full text-center space-y-2.5 font-bold tracking-wide text-[10px] sm:text-xs mt-1">
+        {/* Text Slot 3 */}
+        <div className="flex justify-center">
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="group inline-flex items-center flex-wrap justify-center text-gray-500 hover:text-blue-650 dark:hover:text-blue-400 transition-colors uppercase select-none"
+          >
+            <span className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 text-[8px] sm:text-[9px] rounded font-mono font-bold mr-1.5 border border-blue-200/50 dark:border-blue-900/30 shrink-0">
+              TEXT AD SLOT 3
+            </span>
+            <span className="filter blur-[3px] opacity-45 font-medium transition-all duration-300 group-hover:opacity-60">
+              StormCheck • Blazing Fast Checker • Zero Logs, $0 Charge, Cheap and FAST
+            </span>
+            <span className="ml-1.5 text-[8px] sm:text-[9px] text-blue-550 dark:text-blue-400 font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+              [BOOK NOW &rarr;]
+            </span>
+          </Link>
         </div>
-        <div>
-          <a href="https://jerrycvv.com/reg/?ref=HFBFR4PXX1GPKS85" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-purple-600 transition-colors">
-            Jerry's CC+CVV Store • <span className="text-purple-500 font-extrabold">Excellent Bases</span> • The Only Store With AVS Checker
-          </a>
+        
+        {/* Text Slot 4 */}
+        <div className="flex justify-center">
+          <Link 
+            href="/tools/book-ad" 
+            rel="nofollow sponsored" 
+            className="group inline-flex items-center flex-wrap justify-center text-gray-500 hover:text-purple-650 dark:hover:text-purple-400 transition-colors uppercase select-none"
+          >
+            <span className="px-1.5 py-0.5 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 text-[8px] sm:text-[9px] rounded font-mono font-bold mr-1.5 border border-purple-200/50 dark:border-purple-900/30 shrink-0">
+              TEXT AD SLOT 4
+            </span>
+            <span className="filter blur-[3px] opacity-45 font-medium transition-all duration-300 group-hover:opacity-60">
+              Jerry's CC+CVV Store • Excellent Bases • The Only Store With AVS Checker
+            </span>
+            <span className="ml-1.5 text-[8px] sm:text-[9px] text-purple-550 dark:text-purple-400 font-extrabold opacity-0 group-hover:opacity-100 transition-opacity">
+              [BOOK NOW &rarr;]
+            </span>
+          </Link>
         </div>
       </div>
     </div>

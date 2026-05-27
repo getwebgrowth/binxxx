@@ -1,0 +1,20 @@
+# CC Bins
+
+> Premium Credit Card BIN Lookup, IIN database search, and payments intelligence utility.
+
+CC Bins is an enterprise-grade payment routing and card brand validation system. It queries a local SQLite database containing over 376,900 verified Bank Identification Numbers (BIN) and Issuer Identification Numbers (IIN) to resolve routing bank, credit card levels, network brands, and geographic details in under 1ms.
+
+## Core Capabilities
+
+- **Deep BIN Verification:** Query card prefix details for Visa, Mastercard, American Express, Discover, JCB, and UnionPay.
+- **Bulk Lookup:** Paste multiple BIN prefixes (comma-separated or newline-delimited) to analyze lists instantly.
+- **Advanced Metadata Filters:** Filter datasets by network scheme, funding types (Credit/Debit/Charge), level category (Classic, Platinum, Signature), issuing bank, and geographic country codes.
+- **PCI-DSS Compliant Execution:** Sandbox-isolated lookups; no actual customer transaction data, card numbers, or CVVs are logged or stored.
+
+## Key Pages
+
+- [Homepage](https://ccbins.co/) — Access the main BIN lookup engine and filters interface.
+- [Discover Page](https://ccbins.co/discover) — Explore community reviews, most searched card prefixes, and public database list updates.
+- [Blog](https://ccbins.co/blog) — In-depth fintech reference guides, payment security analyses, and database tutorials.
+- [Tools Directory](https://ccbins.co/tools) — Comprehensive developer and analyst tools.
+- [Pricing details](https://ccbins.co/pricing.txt) — Machine-readable pricing limits and options.

@@ -136,7 +136,7 @@ export default function SearchableDropdown({
   };
 
   return (
-    <div className="group relative flex flex-col" ref={dropdownRef}>
+    <div className={`group relative flex flex-col ${isOpen ? 'z-30' : 'z-10'}`} ref={dropdownRef}>
       <label className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">
         {label}
       </label>
