@@ -19,7 +19,10 @@ import {
   BadgeAlert,
   ArrowUpRight,
   Zap,
-  Download
+  Download,
+  ChevronDown,
+  BookOpen,
+  ListChecks
 } from 'lucide-react';
 
 const CODE_TEMPLATES = {
@@ -67,6 +70,29 @@ func main() {
 }`
 };
 
+const FAQS = [
+  {
+    q: "What is a BIN checker API?",
+    a: "A BIN checker API (Bank Identification Number API) is a REST service that accepts the first 6–8 digits of a credit or debit card and returns metadata: the issuing bank, card brand (Visa, Mastercard, Amex), card type (credit, debit, prepaid), card level, and country of issuance. Used for payment routing, fraud detection, and checkout validation."
+  },
+  {
+    q: "Is the CC Bins API free to use?",
+    a: "Yes. No API key is required. The public endpoint allows up to 10 requests per minute per IP. For higher volume, the complete offline database (376k+ rows, CSV/SQL) is available for $149 one-time."
+  },
+  {
+    q: "How do I make my first BIN lookup API call?",
+    a: "Send a GET request to https://ccbins.co/api/v1/bin/{bin} where {bin} is a 6–8 digit card prefix. No authentication headers needed. The API returns JSON with fields: success, bin, scheme, type, brand, bank (name, phone, url), and country (name, code, flag)."
+  },
+  {
+    q: "What are the BIN API rate limits?",
+    a: "Free tier: 10 requests per minute per IP. Exceeding this returns HTTP 429 Too Many Requests. Response headers include X-RateLimit-Limit, X-RateLimit-Remaining, and X-RateLimit-Reset for programmatic backoff."
+  },
+  {
+    q: "Can I use this BIN API in my browser or only server-side?",
+    a: "Both. The API is CORS-enabled, so you can call it directly from browser JavaScript (fetch/axios). For server-side, use any HTTP library in Python (requests), Node.js (fetch/axios), Go (net/http), PHP (cURL), or any language with HTTP support."
+  }
+];
+
 export default function ApiDocsClient() {
   const [testBin, setTestBin] = useState('453271');
   const [activeTab, setActiveTab] = useState('curl');
@@ -75,6 +101,7 @@ export default function ApiDocsClient() {
   const [httpStatus, setHttpStatus] = useState(null);
   const [rateLimitInfo, setRateLimitInfo] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
 
   // Trigger test request on load
   useEffect(() => {
@@ -251,7 +278,7 @@ export default function ApiDocsClient() {
 
   return (
     <div className="space-y-16 animate-fade-up max-w-5xl mx-auto w-full">
-      {/* Header Banner */}
+      {/* ── Hero Banner ────────────────────────────────────────────── */}
       <div className="text-center space-y-4">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100/50 dark:border-blue-900/20 uppercase tracking-wider">
           <Cpu className="w-3.5 h-3.5" aria-hidden="true" />
@@ -261,8 +288,16 @@ export default function ApiDocsClient() {
           Free Credit Card BIN Checker API
         </h1>
         <p className="text-sm sm:text-base text-gray-550 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          Integrate high-speed credit card BIN checks directly inside your checkout, security, and transaction routing scripts. Accessible publicly, rates-protected, and optimized for SEO.
+          Query any 6–8 digit BIN prefix and instantly get the card brand, type, issuing bank, and country — no API key required. Used by checkout engineers, fraud analysts, and payment routing systems.
         </p>
+        {/* Use-case chips */}
+        <div className="flex flex-wrap justify-center gap-2 pt-1">
+          {['Checkout Validation', 'Fraud Detection', 'Payment Routing', 'Risk Scoring', 'BIN Enrichment'].map(tag => (
+            <span key={tag} className="px-2.5 py-1 text-[10px] font-bold bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400 rounded-full border border-gray-200 dark:border-gray-800">
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Main Interactive Grid */}
@@ -519,7 +554,7 @@ export default function ApiDocsClient() {
               </ul>
             </div>
             <div className="pt-6">
-              <a href="mailto:contact@ccbins.co?subject=BIN%20Database%20Purchase%20Request" className="w-full text-center block px-4 py-2 bg-gray-900 hover:bg-black dark:bg-gray-850 dark:hover:bg-gray-800 text-white rounded-xl font-bold text-xs transition-colors">
+              <a href="mailto:admin@ccbins.co?subject=BIN%20Database%20Purchase%20Request" className="w-full text-center block px-4 py-2 bg-gray-900 hover:bg-black dark:bg-gray-850 dark:hover:bg-gray-800 text-white rounded-xl font-bold text-xs transition-colors">
                 Order Download
               </a>
             </div>
@@ -572,7 +607,7 @@ export default function ApiDocsClient() {
             Includes weekly database update notifications delivered via email for 12 months.
           </p>
           <a
-            href="mailto:contact@ccbins.co?subject=BIN%20Database%20CSV%20SQL%20Download%20Inquiry"
+            href="mailto:admin@ccbins.co?subject=BIN%20Database%20CSV%20SQL%20Download%20Inquiry"
             className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-gray-900 hover:bg-black dark:bg-gray-880 dark:hover:bg-gray-750 text-white rounded-xl font-bold text-xs shadow transition-all hover:shadow-md"
           >
             <Download className="w-3.5 h-3.5" aria-hidden="true" />
@@ -701,7 +736,62 @@ export default function ApiDocsClient() {
 
       </div>
 
-      {/* Developer CTA section - FIXED Contrast bug by removing glass-panel class */}
+      {/* ── How to Integrate — HowTo structured content ─────────── */}
+      <div className="glass-panel p-6 sm:p-8 space-y-6">
+        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-850 pb-4">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+            <ListChecks className="w-4.5 h-4.5 text-blue-500" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-gray-900 dark:text-white">How to Use the BIN Checker API</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">4 steps to integrate BIN lookup in your application</p>
+          </div>
+        </div>
+
+        <ol className="space-y-4">
+          {[
+            {
+              step: 1,
+              title: "Choose your BIN prefix",
+              desc: "Extract the first 6, 7, or 8 digits from a card number. Most modern cards use 8-digit BINs (effective 2022 ISO 7812 standard). 6-digit BINs are also fully supported.",
+              code: "BIN = card_number[:8]  # e.g. '45327185'"
+            },
+            {
+              step: 2,
+              title: "Send a GET request to the endpoint",
+              desc: "No authentication header or API key is required. Pass the BIN as a URL path parameter.",
+              code: "GET https://ccbins.co/api/v1/bin/45327185"
+            },
+            {
+              step: 3,
+              title: "Parse the JSON response",
+              desc: "The API returns a structured JSON object. Check the success field first, then extract the card metadata you need.",
+              code: `{ "success": true, "bin": "453271", "scheme": "visa", "type": "credit", "brand": "CLASSIC", "bank": { "name": "JP Morgan Chase" }, "country": { "name": "United States", "code": "US", "flag": "🇺🇸" } }`
+            },
+            {
+              step: 4,
+              title: "Handle rate limits gracefully",
+              desc: "The free tier allows 10 requests/minute per IP. Read X-RateLimit-Remaining from response headers and implement exponential backoff when approaching limits.",
+              code: "if (res.status === 429) { await sleep(60000); retry(); }"
+            }
+          ].map(({ step, title, desc, code }) => (
+            <li key={step} className="flex gap-4">
+              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-black flex items-center justify-center mt-0.5">
+                {step}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1">{title}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-2">{desc}</p>
+                <code className="block bg-gray-950 text-emerald-400 text-[10px] font-mono px-3 py-2 rounded-lg overflow-x-auto">
+                  {code}
+                </code>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* Developer CTA section */}
       <div className="p-8 text-center space-y-6 bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-gray-800 rounded-3xl text-white overflow-hidden relative group shadow-2xl">
         <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl"></div>
         <div className="relative z-10 max-w-xl mx-auto space-y-4">
@@ -714,7 +804,7 @@ export default function ApiDocsClient() {
           </p>
           <div className="pt-2">
             <a 
-              href="mailto:contact@ccbins.co?subject=Enterprise%20API%20Access%20Request" 
+              href="mailto:admin@ccbins.co?subject=Enterprise%20API%20Access%20Request" 
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-100 text-gray-950 font-bold text-xs rounded-xl shadow-md hover:shadow-lg transition-all focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
             >
               Request Custom Limits
@@ -723,6 +813,46 @@ export default function ApiDocsClient() {
           </div>
         </div>
       </div>
+
+      {/* ── FAQ Section ─────────────────────────────────────────────── */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-3 mb-2">
+          <BookOpen className="w-5 h-5 text-blue-500" />
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          Common questions about integrating and using the CC Bins BIN lookup API.
+        </p>
+
+        <div className="space-y-2">
+          {FAQS.map((faq, i) => (
+            <div
+              key={i}
+              className="glass-panel overflow-hidden border border-gray-100 dark:border-gray-850 hover:border-blue-200 dark:hover:border-blue-900/50 transition-colors"
+            >
+              <button
+                type="button"
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full flex items-center justify-between gap-3 p-5 text-left"
+                aria-expanded={openFaq === i}
+              >
+                <span className="text-sm font-bold text-gray-900 dark:text-white">{faq.q}</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 ${
+                    openFaq === i ? 'rotate-180 text-blue-500' : ''
+                  }`}
+                />
+              </button>
+              {openFaq === i && (
+                <div className="px-5 pb-5 text-xs text-gray-500 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-850 pt-3">
+                  {faq.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }

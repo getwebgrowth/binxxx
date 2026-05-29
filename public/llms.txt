@@ -17,4 +17,4 @@ CC Bins is an enterprise-grade payment routing and card brand validation system.
 - [Discover Page](https://ccbins.co/discover) — Explore community reviews, most searched card prefixes, and public database list updates.
 - [Blog](https://ccbins.co/blog) — In-depth fintech reference guides, payment security analyses, and database tutorials.
 - [Tools Directory](https://ccbins.co/tools) — Comprehensive developer and analyst tools.
-- [Pricing details](https://ccbins.co/pricing.txt) — Machine-readable pricing limits and options.
+- [Pricing details](https://ccbins.co/pricing.md) — Machine-readable pricing limits and options.

@@ -16,9 +16,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${post.title} - CC Bins Blog`,
     description: post.summary,
-    alternates: {
-      canonical: `https://ccbins.co/blog/${post.slug}`,
-    },
+    alternates: { canonical: `https://ccbins.co/blog/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.summary,
@@ -26,8 +24,10 @@ export async function generateMetadata({ params }) {
       publishedTime: post.published_at,
       modifiedTime: post.updated_at,
       url: `https://ccbins.co/blog/${post.slug}`,
-      authors: [post.author_name]
-    }
+      authors: [post.author_name],
+      images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.summary },
   };
 }
 
@@ -68,40 +68,40 @@ export default async function BlogPostPage({ params }) {
         },
         "headline": post.title,
         "description": post.summary,
+        // image required for Google News/Discover eligibility
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://ccbins.co/og-default.png",
+          "width": 1200,
+          "height": 630
+        },
         "datePublished": post.published_at,
         "dateModified": post.updated_at || post.published_at,
         "author": {
           "@type": "Person",
-          "name": post.author_name
+          "name": post.author_name,
+          "email": post.author_email || "admin@ccbins.co"
         },
+        // publisher + logo required for Google News/Discover Article rich results
         "publisher": {
           "@type": "Organization",
           "name": "CC Bins",
-          "url": "https://ccbins.co"
+          "url": "https://ccbins.co",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://ccbins.co/logo.png",
+            "width": 200,
+            "height": 200
+          }
         }
       },
       {
         "@type": "BreadcrumbList",
         "@id": `https://ccbins.co/blog/${post.slug}#breadcrumb`,
         "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://ccbins.co"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Blog",
-            "item": "https://ccbins.co/blog"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": post.title,
-            "item": `https://ccbins.co/blog/${post.slug}`
-          }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ccbins.co" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://ccbins.co/blog" },
+          { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://ccbins.co/blog/${post.slug}` }
         ]
       }
     ]
@@ -174,11 +174,15 @@ export default async function BlogPostPage({ params }) {
           {/* Author Block */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-650 flex items-center justify-center text-xs text-white font-extrabold shadow-sm select-none">
-              {post.author_name ? post.author_name.charAt(0).toUpperCase() : 'A'}
+              {post.author_name === 'admin' ? 'C' : (post.author_name ? post.author_name.charAt(0).toUpperCase() : 'A')}
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-gray-900 dark:text-white leading-none">{post.author_name}</span>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-1">{post.author_email || 'contact@ccbins.co'}</span>
+              <span className="text-xs font-bold text-gray-900 dark:text-white leading-none">
+                {post.author_name === 'admin' ? 'CC Bins Team' : post.author_name}
+              </span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-1">
+                contact@ccbins.co
+              </span>
             </div>
           </div>
 

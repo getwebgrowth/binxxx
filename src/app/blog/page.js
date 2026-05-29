@@ -2,20 +2,35 @@ import Link from 'next/link';
 import { BookOpen, Calendar, User, ArrowRight, Tag, Search, Eye } from 'lucide-react';
 import { getPosts } from '@/lib/dbBlog';
 
-export const metadata = {
-  title: 'CC Bins Blog - Payments Security & Credit Card BIN Intelligence',
-  description: 'Stay updated with expert articles on fintech, secure routing, payment compliance, carding fraud mitigation, and advanced BIN intelligence.',
-  keywords: 'BIN lookup, carding, fintech, payment security, 3D secure, BIN database, bank identification number',
-  alternates: {
-    canonical: 'https://ccbins.co/blog',
-  },
-  openGraph: {
-    title: 'CC Bins Blog - Payments Security & Credit Card BIN Intelligence',
-    description: 'Expert fintech insights and payment intelligence articles from the CC Bins team.',
-    type: 'website',
-    url: 'https://ccbins.co/blog',
+// Dynamic metadata: noindex parameterized filter/search URLs to avoid thin content
+export async function generateMetadata({ searchParams }) {
+  const hasParams = searchParams?.category || searchParams?.q;
+
+  if (hasParams) {
+    // ?category= and ?q= pages are thin/duplicate — noindex, but follow links
+    return {
+      title: 'CC Bins Blog - Payments Security & Credit Card BIN Intelligence',
+      description: 'Expert fintech insights and payment intelligence articles from the CC Bins team.',
+      alternates: { canonical: 'https://ccbins.co/blog' },
+      robots: { index: false, follow: true },
+    };
   }
-};
+
+  // Clean /blog canonical — fully indexable with OG tags
+  return {
+    title: 'BIN Intelligence Blog — Payments, Fintech & Card Security | CC Bins',
+    description: 'Stay updated with expert articles on fintech, secure routing, payment compliance, fraud mitigation, and advanced BIN/IIN intelligence from the CC Bins team.',
+    alternates: { canonical: 'https://ccbins.co/blog' },
+    openGraph: {
+      title: 'BIN Intelligence Blog — Payments & Fintech | CC Bins',
+      description: 'Expert fintech insights and payment intelligence articles from the CC Bins team.',
+      type: 'website',
+      url: 'https://ccbins.co/blog',
+      images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: 'CC Bins Blog' }],
+    },
+    twitter: { card: 'summary_large_image', title: 'BIN Intelligence Blog | CC Bins', description: 'Expert fintech and payment security insights.' },
+  };
+}
 
 export default async function BlogPage({ searchParams }) {
   // Fetch all published posts
@@ -141,9 +156,9 @@ export default async function BlogPage({ searchParams }) {
               <div className="flex items-center justify-between border-t border-gray-150 dark:border-gray-850 pt-4 mt-2">
                 <div className="flex items-center gap-2 text-[11px] text-gray-650 dark:text-gray-300 font-semibold">
                   <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-650 flex items-center justify-center text-[9px] text-white font-extrabold select-none">
-                    {post.author_name ? post.author_name.charAt(0).toUpperCase() : 'A'}
+                    {post.author_name === 'admin' ? 'C' : (post.author_name ? post.author_name.charAt(0).toUpperCase() : 'A')}
                   </div>
-                  <span>{post.author_name}</span>
+                  <span>{post.author_name === 'admin' ? 'CC Bins Team' : post.author_name}</span>
                 </div>
 
                 <Link

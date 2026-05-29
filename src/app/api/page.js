@@ -1,12 +1,17 @@
 import ApiDocsClient from '@/components/ApiDocsClient';
 
 export const metadata = {
-  title: 'Free Credit Card BIN Checker API & BIN Database For Sale | CC Bins',
-  description: 'Integrate the public card BIN lookup API for real-time issuer identification. Buy complete BIN database downloads in CSV/SQL formats. Secure commercial routing.',
-  keywords: 'card bin api, credit card bin lookup api, free bin lookup api, iin lookup api, real-time bin checker api, bin list api, buy bin database, bin database download, bin database for sale, premium bin checker pricing',
-  alternates: {
-    canonical: 'https://ccbins.co/api',
-  }
+  title: 'Free Credit Card BIN Checker API & BIN Database Download | CC Bins',
+  description: 'Integrate the public card BIN lookup API for real-time issuer identification. Buy the complete BIN database in CSV/SQL formats. Secure, fast, PCI-DSS compliant.',
+  alternates: { canonical: 'https://ccbins.co/api' },
+  openGraph: {
+    title: 'Free BIN Lookup API & Database Download | CC Bins',
+    description: 'Real-time card BIN lookup API and offline database download. 376k+ BIN/IIN records in CSV and SQL formats.',
+    type: 'website',
+    url: 'https://ccbins.co/api',
+    images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: 'CC Bins BIN API Documentation' }],
+  },
+  twitter: { card: 'summary_large_image', title: 'BIN Lookup API & Database Download | CC Bins', description: 'Real-time card BIN lookup API with 376k+ verified records.' },
 };
 
 export default function ApiDocsPage() {

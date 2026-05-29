@@ -255,18 +255,28 @@ Total Quoted Price: $${totalPrice}.00 USD
           Premium Advertising Placements
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mt-3 mb-2 flex items-center justify-center gap-2 flex-wrap">
-          <Megaphone className="w-8 h-8 text-blue-500 animate-pulse shrink-0" />
+          <Megaphone className="w-8 h-8 text-blue-500 shrink-0" />
           Advertise on CC Bins
         </h1>
-        <p className="text-sm text-gray-655 dark:text-gray-300 max-w-2xl mx-auto font-bold flex items-center justify-center gap-1.5 flex-wrap">
-          Daily active attendance of the resource is 
-          <span className="bg-blue-100 dark:bg-blue-900/35 px-2 py-0.5 rounded text-blue-750 dark:text-blue-400 font-mono">≈ 4,420 people</span> 
-          and 
-          <span className="bg-indigo-100 dark:bg-indigo-900/35 px-2 py-0.5 rounded text-indigo-750 dark:text-indigo-400 font-mono">11,300 views</span>.
-          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1 font-extrabold ml-1 select-none">
-            Stat visitors <Globe className="w-3.5 h-3.5" />
-          </Link>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-medium mb-6">
+          Reach a high-intent audience of fintech developers, payment risk analysts, and carding researchers.
         </p>
+
+        {/* Live stats row */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {[
+            { label: "Daily Views", value: "65,000+", icon: <Eye className="w-3.5 h-3.5 text-blue-500" /> },
+            { label: "Monthly Uniques", value: "180,000+", icon: <Globe className="w-3.5 h-3.5 text-indigo-500" /> },
+            { label: "Avg. Session", value: "4m 12s", icon: <Sparkles className="w-3.5 h-3.5 text-amber-500" /> },
+            { label: "Audience", value: "Fintech / Carding", icon: <TrendingUp className="w-3.5 h-3.5 text-emerald-500" /> },
+          ].map((stat, i) => (
+            <div key={i} className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-gray-950/60 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm text-xs">
+              {stat.icon}
+              <span className="text-gray-400 dark:text-gray-500 font-medium">{stat.label}:</span>
+              <span className="font-extrabold text-gray-900 dark:text-white font-mono">{stat.value}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {!submitted ? (
@@ -648,22 +658,35 @@ Total Quoted Price: $${totalPrice}.00 USD
                 Audience Reach Metrics
               </h3>
 
-              <div className="flex flex-col gap-3">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-500 font-medium">Daily Global Page Views</span>
-                  <span className="font-bold text-gray-900 dark:text-white">65,000+ views</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-500 font-medium">Unique Users Monthly</span>
-                  <span className="font-bold text-gray-900 dark:text-white">180,000+ uniques</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-550 font-medium">Audience Interests</span>
-                  <span className="font-bold text-blue-600 dark:text-blue-400">Carding, Fintech, Payments</span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-500 font-medium">Average Session Time</span>
-                  <span className="font-bold text-gray-900 dark:text-white">4m 12s</span>
+              <div className="flex flex-col gap-4">
+                {[
+                  { label: "Daily Global Page Views", value: "65,000+", pct: 88, color: "bg-blue-500" },
+                  { label: "Unique Users Monthly", value: "180,000+", pct: 72, color: "bg-indigo-500" },
+                  { label: "Avg. Session Duration", value: "4m 12s", pct: 60, color: "bg-emerald-500" },
+                ].map((m, i) => (
+                  <div key={i}>
+                    <div className="flex justify-between items-center text-xs mb-1.5">
+                      <span className="text-gray-500 dark:text-gray-400 font-medium">{m.label}</span>
+                      <span className="font-bold text-gray-900 dark:text-white font-mono">{m.value}</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-gray-100 dark:bg-gray-850 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${m.color} opacity-70`}
+                        style={{ width: `${m.pct}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex justify-between items-center text-xs pt-2 border-t border-gray-100 dark:border-gray-850">
+                  <span className="text-gray-500 dark:text-gray-400 font-medium">Audience Interests</span>
+                  <div className="flex gap-1.5">
+                    {["Carding", "Fintech", "Payments"].map(tag => (
+                      <span key={tag} className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

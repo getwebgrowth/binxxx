@@ -156,7 +156,7 @@ export default function HomeClient() {
       <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-gray-100 dark:border-gray-850 pb-6 animate-fade-up">
         <div className="text-center md:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2">
-            Deep BIN Intelligence
+            Free Credit Card BIN Lookup &amp; IIN Database
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-2xl font-medium">
             Query millions of records instantly. Use bulk lookup or filter our massive local datasets directly.

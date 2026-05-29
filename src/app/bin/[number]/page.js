@@ -1,6 +1,7 @@
 import { lookupBins } from "@/lib/binLookup";
 import CopyButton from "@/components/CopyButton";
 import CommunityReviews from "@/components/CommunityReviews";
+import BookmarkButton from "@/components/BookmarkButton";
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -22,23 +23,39 @@ export async function generateMetadata({ params }) {
   const data = results && results.length > 0 && !results[0].error ? results[0] : null;
 
   if (data) {
-    const title = `BIN ${bin} Details - ${data.brand || ""} ${data.type || ""} Card issued by ${data.bank || "Unknown Bank"} | CC Bins`;
-    const description = `Verify BIN ${bin}. Country: ${data.country || "N/A"} ${data.flag || ""}, Network: ${data.brand || "N/A"}, Level: ${data.level || "N/A"}, Bank: ${data.bank || "N/A"}. Live lookup results from CC Bins.`;
+    // No emoji in meta description — renders oddly in some SERPs
+    const title = `BIN ${bin} — ${data.brand || 'Card'} ${data.type || ''} Card Details | CC Bins`;
+    const description = `BIN ${bin} is a ${data.brand || 'card'} ${data.type || ''} ${data.level || 'Classic'} card issued by ${data.bank || 'Unknown Bank'} in ${data.country || 'Unknown Country'}. Free live BIN lookup from CC Bins.`;
+    const ogTitle = `BIN ${bin} — ${data.brand || ''} ${data.type || ''} ${data.level || ''} Card`;
     return {
       title,
       description,
-      alternates: {
-        canonical: `https://ccbins.co/bin/${bin}`,
-      }
+      alternates: { canonical: `https://ccbins.co/bin/${bin}` },
+      openGraph: {
+        title: ogTitle,
+        description,
+        type: 'website',
+        url: `https://ccbins.co/bin/${bin}`,
+        images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: `BIN ${bin} Lookup` }],
+      },
+      twitter: { card: 'summary_large_image', title: ogTitle, description },
     };
   }
 
+  const fallbackTitle = `BIN ${bin} Lookup — Verify Credit Card Issuer Info | CC Bins`;
+  const fallbackDesc = `Check details for BIN ${bin}. Find out the card brand, issuing bank, card level, and country of origin instantly with CC Bins.`;
   return {
-    title: `${bin} BIN Lookup - Verify Credit Card Info | CC Bins`,
-    description: `Check details for BIN ${bin}. Find out the card brand, issuing bank, card level, and country of origin instantly with CC Bins.`,
-    alternates: {
-      canonical: `https://ccbins.co/bin/${bin}`,
-    }
+    title: fallbackTitle,
+    description: fallbackDesc,
+    alternates: { canonical: `https://ccbins.co/bin/${bin}` },
+    openGraph: {
+      title: fallbackTitle,
+      description: fallbackDesc,
+      type: 'website',
+      url: `https://ccbins.co/bin/${bin}`,
+      images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: `BIN ${bin} Lookup` }],
+    },
+    twitter: { card: 'summary_large_image', title: fallbackTitle, description: fallbackDesc },
   };
 }
 
@@ -64,47 +81,48 @@ export default async function SingleBinPage({ params }) {
     );
   }
 
-  // Schema Markup for search engines and AI agents
+  // Schema Markup — FinancialProduct is semantically correct for BIN lookup data
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Product",
-        "name": `BIN ${bin} Information`,
-        "description": `Detailed BIN details for card prefix ${bin}, issued by ${data.bank || "Unknown Bank"} in ${data.country || "Unknown Country"}.`,
-        "category": `${data.brand || ""} ${data.type || ""} Card`,
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
+        "@type": "FinancialProduct",
+        "@id": `https://ccbins.co/bin/${bin}#financialproduct`,
+        "name": `BIN ${bin} — ${data.brand || 'Card'} ${data.type || ''} ${data.level || ''}`,
+        "description": `BIN/IIN ${bin} is a ${data.brand || 'card'} ${data.type || ''} ${data.level || 'Classic'} card issued by ${data.bank || 'Unknown Bank'} in ${data.country || 'Unknown Country'}.`,
+        "url": `https://ccbins.co/bin/${bin}`,
+        "provider": {
+          "@type": "Organization",
+          "name": data.bank || "Unknown Bank",
+          "areaServed": data.country || "Worldwide"
         },
-        "brand": {
-          "@type": "Brand",
-          "name": data.brand || "Unknown Brand"
+        "isRelatedTo": {
+          "@type": "BankAccount",
+          "name": `${data.brand || ''} ${data.type || ''} Account`
         }
       },
       {
         "@type": "BreadcrumbList",
+        "@id": `https://ccbins.co/bin/${bin}#breadcrumb`,
         "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://ccbins.co"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "BIN Database",
-            "item": "https://ccbins.co/discover"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": `BIN ${bin}`,
-            "item": `https://ccbins.co/bin/${bin}`
-          }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ccbins.co" },
+          { "@type": "ListItem", "position": 2, "name": "BIN Database", "item": "https://ccbins.co/discover" },
+          { "@type": "ListItem", "position": 3, "name": `BIN ${bin}`, "item": `https://ccbins.co/bin/${bin}` }
         ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://ccbins.co/#organization",
+        "name": "CC Bins",
+        "url": "https://ccbins.co",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ccbins.co/logo.png",
+          "width": 200,
+          "height": 200
+        },
+        "description": "Enterprise-grade credit card BIN lookup and IIN database with 376,000+ verified card prefixes.",
+        "contactPoint": { "@type": "ContactPoint", "contactType": "customer support", "email": "admin@ccbins.co" }
       }
     ]
   };
@@ -201,12 +219,20 @@ export default async function SingleBinPage({ params }) {
           <div className="glass-panel p-6 sm:p-8 flex flex-col md:flex-row gap-8 items-center justify-between overflow-hidden relative group">
             
             <div className="flex-1 space-y-4 w-full">
-              <span className="inline-flex items-center justify-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
-                Live BIN Node
-              </span>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
-                <span className="font-mono">{bin}</span>
-                {data.flag && <span className="text-2xl sm:text-3xl" title={data.country}>{data.flag}</span>}
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center justify-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
+                  Live BIN Node
+                </span>
+                <BookmarkButton bin={bin} />
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                <span className="flex items-center gap-3 flex-wrap">
+                  <span className="font-mono">{bin}</span>
+                  {data.flag && <span className="text-2xl sm:text-3xl" title={data.country}>{data.flag}</span>}
+                </span>
+                <span className="block text-base sm:text-lg font-semibold text-gray-500 dark:text-gray-400 mt-1 tracking-normal">
+                  {data.brand || 'Card'} {data.type || ''} {data.level || 'Card'} — {data.bank || 'Unknown Bank'}
+                </span>
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-md">
                 Verified index details for <strong className="text-gray-950 dark:text-white font-bold">bin number check</strong> on the card prefix range <span className="font-mono font-bold text-gray-900 dark:text-white">{bin}</span>. Perform a lookup to check if this is {data.brand ? `a ${data.brand}` : 'an'} {data.type || "unknown type"} {data.level || "Classic"} card issued by <span className="font-bold text-gray-850 dark:text-gray-200">{data.bank || "Unknown Bank"}</span> in <span className="font-bold text-gray-850 dark:text-gray-200">{data.country || "Unknown Country"}</span>.

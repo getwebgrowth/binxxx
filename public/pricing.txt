@@ -10,7 +10,7 @@ CC Bins is primarily a free, public intelligence utility for searching and audit
 ## Premium Offline Database Download
 - **Price:** $149.00 (One-Time Purchase)
 - **Features:** Complete sanitized CSV/SQL database download (376,900+ verified rows), weekly updates for 12 months, and full offline integration support
-- **Purchase Contact:** contact@ccbins.co
+- **Purchase Contact:** admin@ccbins.co
 
 ## API Access (Developer Sandbox)
 - **Price:** Free / Beta

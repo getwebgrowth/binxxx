@@ -4,9 +4,15 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Privacy Policy - CC Bins Card Verification Platform',
   description: 'Understand CC Bins privacy compliance rules, PCI-DSS sandbox data standards, and read how we manage safe bin lookups without storing cardholder details.',
-  alternates: {
-    canonical: 'https://ccbins.co/privacy',
-  }
+  alternates: { canonical: 'https://ccbins.co/privacy' },
+  openGraph: {
+    title: 'Privacy Policy | CC Bins',
+    description: 'How CC Bins handles your data — PCI-DSS compliant BIN lookup with zero cardholder data stored.',
+    type: 'website',
+    url: 'https://ccbins.co/privacy',
+    images: [{ url: 'https://ccbins.co/og-default.png', width: 1200, height: 630, alt: 'CC Bins Privacy Policy' }],
+  },
+  twitter: { card: 'summary', title: 'Privacy Policy | CC Bins', description: 'PCI-DSS compliant BIN lookup with zero cardholder data stored.' },
 };
 
 export default function PrivacyPage() {
@@ -137,7 +143,7 @@ export default function PrivacyPage() {
               4. Contact Privacy Officer
             </h2>
             <p className="text-xs sm:text-sm">
-              If you have additional questions or require more information about our privacy procedures, do not hesitate to contact our data compliance coordinator at <a href="mailto:contact@ccbins.co" className="text-blue-600 hover:underline">contact@ccbins.co</a>.
+              If you have additional questions or require more information about our privacy procedures, do not hesitate to contact our data compliance coordinator at <a href="mailto:admin@ccbins.co" className="text-blue-600 hover:underline">admin@ccbins.co</a>.
             </p>
           </div>
         </div>

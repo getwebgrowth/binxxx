@@ -45,8 +45,8 @@ export default function ContactPage() {
     {
       title: "Email Assistance",
       description: "For data inaccuracies reports, enterprise key requests, and compliance audits.",
-      value: "contact@ccbins.co",
-      link: "mailto:contact@ccbins.co",
+      value: "admin@ccbins.co",
+      link: "mailto:admin@ccbins.co",
       icon: <Mail className="w-5 h-5 text-blue-500" />,
       cta: "Send Email"
     },

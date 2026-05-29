@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev:clean": "rm -rf .next && next dev",
+    "build:clean": "rm -rf .next && next build"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

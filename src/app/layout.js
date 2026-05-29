@@ -1,24 +1,87 @@
 import './globals.css';
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import AdsArea from '@/components/AdsArea';
-import ThemeToggle from '@/components/ThemeToggle';
-import CommandPaletteTrigger from '@/components/CommandPaletteTrigger';
 import Footer from '@/components/Footer';
-import Link from 'next/link';
+import HeaderClient from '@/components/HeaderClient';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta' });
 const jetbrains = JetBrains_Mono({ weight: ['400', '600', '800'], subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata = {
   metadataBase: new URL('https://ccbins.co'),
-  title: 'CC Bins - Premium Credit Card BIN Lookup & Database Reference',
-  description: 'Enterprise-grade credit card BIN lookup tool with advanced filtering, bulk lookup capabilities, and a massive 376k+ BIN/IIN database.',
+  title: {
+    default: 'CC Bins - Free Credit Card BIN Lookup & IIN Database',
+    template: '%s | CC Bins',
+  },
+  description: 'Enterprise-grade credit card BIN lookup tool with advanced filtering, bulk lookup capabilities, and a massive 376k+ BIN/IIN database. Free, fast, PCI-DSS compliant.',
+  // Sitewide OG fallback — pages without their own OG image will use this
+  openGraph: {
+    siteName: 'CC Bins',
+    type: 'website',
+    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'CC Bins — Free Credit Card BIN Lookup & IIN Database' }],
+  },
+  // Sitewide Twitter card fallback
+  twitter: {
+    card: 'summary_large_image',
+    site: '@ccbins',
+    creator: '@ccbins',
+  },
+  // robots: allow all (including AI bots via robots.js)
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Organization + WebSite JSON-LD — sitewide entity recognition for Google KG, GEO, AEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://ccbins.co/#organization",
+                "name": "CC Bins",
+                "url": "https://ccbins.co",
+                "logo": {
+                  "@type": "ImageObject",
+                  "@id": "https://ccbins.co/#logo",
+                  "url": "https://ccbins.co/logo.png",
+                  "width": 200,
+                  "height": 200,
+                  "caption": "CC Bins"
+                },
+                "image": { "@id": "https://ccbins.co/#logo" },
+                "description": "Enterprise-grade credit card BIN lookup and IIN database with 376,000+ verified card prefixes. Free, PCI-DSS compliant, sub-1ms lookups.",
+                "email": "admin@ccbins.co",
+                "sameAs": [
+                  "https://t.me/mrcheckeradmin"
+                ],
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "contactType": "customer support",
+                  "email": "admin@ccbins.co"
+                }
+              },
+              {
+                "@type": "WebSite",
+                "@id": "https://ccbins.co/#website",
+                "url": "https://ccbins.co",
+                "name": "CC Bins",
+                "description": "Free credit card BIN lookup and IIN database",
+                "publisher": { "@id": "https://ccbins.co/#organization" },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": { "@type": "EntryPoint", "urlTemplate": "https://ccbins.co/?q={search_term_string}" },
+                  "query-input": "required name=search_term_string"
+                },
+                "inLanguage": "en-US"
+              }
+            ]
+          }) }}
+        />
         <script dangerouslySetInnerHTML={{__html: `
           (function() {
             try {
@@ -35,39 +98,8 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${jakarta.variable} ${jetbrains.variable} font-sans min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-100`}>
         
-        {/* Header - Glassmorphism style */}
-        <header className="sticky top-0 z-50 glass-panel border-b border-gray-100 dark:border-gray-800 rounded-none border-x-0 border-t-0 shadow-sm backdrop-blur-xl bg-white/70 dark:bg-gray-950/75">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:-translate-y-0.5 transition-all duration-300">
-                <span className="text-white font-mono font-bold text-lg tracking-tighter">CC</span>
-              </div>
-              <span className="font-mono text-xl font-extrabold tracking-tight text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-350 transition-colors">
-                CC Bins
-              </span>
-            </Link>
-            
-            {/* Nav & Controls */}
-            <div className="flex items-center gap-8">
-              <nav className="hidden md:flex gap-6 text-[13px] font-semibold text-gray-500 dark:text-gray-400">
-                <Link href="/" className="hover:text-gray-900 dark:hover:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-gray-900 dark:after:bg-white hover:after:w-full after:transition-all after:duration-300">My Bins</Link>
-                <Link href="/discover" className="hover:text-gray-900 dark:hover:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-gray-900 dark:after:bg-white hover:after:w-full after:transition-all after:duration-300">Discover</Link>
-                <Link href="/tools" className="hover:text-gray-900 dark:hover:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-gray-900 dark:after:bg-white hover:after:w-full after:transition-all after:duration-300">Tools</Link>
-                <Link href="/api" className="hover:text-gray-900 dark:hover:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-gray-900 dark:after:bg-white hover:after:w-full after:transition-all after:duration-300">API Docs</Link>
-                <Link href="/blog" className="hover:text-gray-900 dark:hover:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-gray-900 dark:after:bg-white hover:after:w-full after:transition-all after:duration-300">Blog</Link>
-                <Link href="/admin" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-bold">Admin Portal</Link>
-              </nav>
-              
-              <div className="flex items-center gap-3">
-                {/* Search Shortcut & Command Palette */}
-                <CommandPaletteTrigger />
-                {/* Theme Toggle */}
-                <ThemeToggle />
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Header - dynamic Client Component */}
+        <HeaderClient />
 
 
         {/* Banners Space */}
